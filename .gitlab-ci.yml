@@ -1,7 +1,7 @@
 .cargo_lint_template: &cargo_lint
   stage: lint
   script:
-    - scripts/validate.sh
+    - cargo clippy
 
 .cargo_test_template: &cargo_test
   stage: test
