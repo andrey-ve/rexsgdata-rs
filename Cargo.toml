@@ -1,8 +1,27 @@
 [package]
 name = "sgdata"
-version = "0.1.0"
+version = "0.1.0" # remember to update html_root_url
 authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
+categories = ["network-programming"]
 description = "Scatter-Gather Data Descriptors"
+documentation = "https://docs.rs/sgdata"
+keywords = ["dynamic", "dns", "ddns"]
+license = "Apache-2.0 OR MIT"
+readme = "README.md"
 repository = "https://gitlab.com/imp/sgdate-rs.git"
 
+[badges]
+gitlab = { repository = "imp/sgdata-rs" }
+maintenance = { status = "experimental" }
+
 [dependencies]
+libc = "0.2"
+serde = "1.0"
+serde_derive = "1.0"
+
+[dev-dependencies]
+bincode = "1.0"
+serde_test = "1.0"
+
+[features]
+pedantic = []
