@@ -1,0 +1,8 @@
+[package]
+name = "sgdata"
+version = "0.1.0"
+authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
+description = "Scatter-Gather Data Descriptors"
+repository = "https://gitlab.com/imp/sgdate-rs.git"
+
+[dependencies]
