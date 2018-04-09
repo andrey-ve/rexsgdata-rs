@@ -2,10 +2,10 @@
 name = "sgdata"
 version = "0.1.0" # remember to update html_root_url
 authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
-categories = ["network-programming"]
+categories = ["data-structures"]
 description = "Scatter-Gather Data Descriptors"
 documentation = "https://docs.rs/sgdata"
-keywords = ["dynamic", "dns", "ddns"]
+keywords = ["scatter", "gather", "iovec"]
 license = "Apache-2.0 OR MIT"
 readme = "README.md"
 repository = "https://gitlab.com/imp/sgdate-rs.git"
