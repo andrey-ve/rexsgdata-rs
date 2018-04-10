@@ -232,6 +232,25 @@ impl PartialEq for Element {
 unsafe impl Send for Element {}
 unsafe impl Sync for Element {}
 
+impl Serialize for Element {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match *self {
+            Element::Zero(ref size) => serializer.serialize_bytes(&vec![0; *size]),
+            Element::Iovec(ref iov) => {
+                let buf = unsafe {
+                    let base = (*iov).iov_base as *const u8;
+                    let len = (*iov).iov_len as usize;
+                    slice::from_raw_parts(base, len)
+                };
+                serializer.serialize_bytes(buf)
+            }
+        }
+    }
+}
+
 impl<'de> de::Deserialize<'de> for Element {
     fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
     where
