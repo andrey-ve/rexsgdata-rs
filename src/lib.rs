@@ -8,9 +8,10 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
+use std::iter::FromIterator;
+use std::fmt;
 use std::slice;
 use std::vec;
-use std::fmt;
 
 use libc::{c_int, c_void, iovec, size_t};
 use serde::de::{self, Error};
@@ -40,6 +41,18 @@ impl From<Vec<Vec<u8>>> for SgData {
     fn from(sgvec: Vec<Vec<u8>>) -> Self {
         SgData::SgVec(sgvec)
     }
+}
+
+impl FromIterator<u8> for SgData {
+    fn from_iter<T>(iter: T) -> Self
+    where
+        T: IntoIterator<Item = u8>,
+    {
+        let vec = iter.into_iter().collect::<Vec<_>>();
+        SgData::Direct(vec)
+    }
+}
+
 }
 
 impl Serialize for SgData {
