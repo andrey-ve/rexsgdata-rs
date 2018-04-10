@@ -130,6 +130,7 @@ impl SgList {
 }
 
 unsafe impl Send for SgList {}
+unsafe impl Sync for SgList {}
 
 impl Serialize for SgList {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -214,6 +215,7 @@ impl PartialEq for Element {
 }
 
 unsafe impl Send for Element {}
+unsafe impl Sync for Element {}
 
 impl<'de> de::Deserialize<'de> for Element {
     fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
@@ -230,6 +232,7 @@ fn _assert_impls() {
     fn assert_clone<T: Clone>() {}
 
     assert_send::<SgData>();
+    assert_sync::<SgData>();
 }
 
 #[cfg(test)]
