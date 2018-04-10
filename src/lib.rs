@@ -239,8 +239,20 @@ fn _assert_impls() {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn element_zero() {
+        assert_eq!(Element::zero(1024), Element::zero(1024));
+    }
+
+    #[test]
+    fn element_iovec() {
+        let mut buf = [0x55; 1024];
+        let iov = buf.as_mut_ptr() as *mut c_void;
+        let len = buf.len();
+        let e1 = Element::from((iov, len));
+        let e2 = Element::from(iovec { iov_base: iov, iov_len: len });
+        assert_eq!(e1, e2);
     }
 }
