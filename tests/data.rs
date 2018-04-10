@@ -8,7 +8,7 @@ use std::mem;
 
 use bincode::{deserialize, serialize};
 use libc::{c_int, c_void, iovec};
-use rexsgdata::{SgData, SgList, Element};
+use rexsgdata::{Element, SgData, SgList};
 use serde_test::{assert_ser_tokens, Token};
 
 // NB - never use this code outside of the tests - it leaks memory
@@ -43,7 +43,8 @@ fn sglist_serde() {
 
 #[test]
 fn element_serde() {
-    let data: SgData = vec![vec![0x46; 4096]; 7].into_iter()
+    let data: SgData = vec![vec![0x46; 4096]; 7]
+        .into_iter()
         .map(vec_into_iovec)
         .map(Element::from)
         .collect();
@@ -136,14 +137,16 @@ fn sglist() {
 
 #[test]
 fn element_zero() {
-    let data: SgData = vec![Element::zero(4), Element::zero(5)].into_iter().collect();
+    let data: SgData = vec![Element::zero(4), Element::zero(5)]
+        .into_iter()
+        .collect();
     assert_ser_tokens(
         &data,
         &[
             Token::TupleVariant {
                 name: "SgData",
                 variant: "SgVec",
-                len: 1
+                len: 1,
             },
             Token::Seq { len: Some(2) },
             Token::Seq { len: Some(4) },
@@ -167,7 +170,8 @@ fn element_zero() {
 
 #[test]
 fn element_iovec() {
-    let data: SgData = vec![vec![36, 123, 234], vec![87, 187, 211, 45]].into_iter()
+    let data: SgData = vec![vec![36, 123, 234], vec![87, 187, 211, 45]]
+        .into_iter()
         .map(vec_into_iovec)
         .map(Element::from)
         .collect();
@@ -178,7 +182,7 @@ fn element_iovec() {
             Token::TupleVariant {
                 name: "SgData",
                 variant: "SgVec",
-                len: 1
+                len: 1,
             },
             Token::Seq { len: Some(2) },
             Token::Seq { len: Some(3) },
@@ -200,7 +204,8 @@ fn element_iovec() {
 
 #[test]
 fn element_mixed() {
-    let data: SgData = vec![vec![36, 123, 234]].into_iter()
+    let data: SgData = vec![vec![36, 123, 234]]
+        .into_iter()
         .map(vec_into_iovec)
         .map(Element::from)
         .chain(Some(Element::zero(5)))
@@ -212,7 +217,7 @@ fn element_mixed() {
             Token::TupleVariant {
                 name: "SgData",
                 variant: "SgVec",
-                len: 1
+                len: 1,
             },
             Token::Seq { len: Some(2) },
             Token::Seq { len: Some(3) },
