@@ -254,5 +254,6 @@ mod tests {
         let e1 = Element::from((iov, len));
         let e2 = Element::from(iovec { iov_base: iov, iov_len: len });
         assert_eq!(e1, e2);
+        assert_ne!(e1, Element::zero(1024));
     }
 }
