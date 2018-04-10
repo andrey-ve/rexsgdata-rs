@@ -264,8 +264,12 @@ mod tests {
         let mut buf = [0x55; 1024];
         let iov = buf.as_mut_ptr() as *mut c_void;
         let len = buf.len();
+        let iovec = iovec {
+            iov_base: iov,
+            iov_len: len,
+        };
         let e1 = Element::from((iov, len));
-        let e2 = Element::from(iovec { iov_base: iov, iov_len: len });
+        let e2 = Element::from(iovec);
         assert_eq!(e1, e2);
         assert_ne!(e1, Element::zero(1024));
     }
