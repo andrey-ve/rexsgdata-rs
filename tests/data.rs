@@ -1,15 +1,15 @@
 extern crate bincode;
 extern crate libc;
+extern crate rexsgdata;
 extern crate serde;
 extern crate serde_test;
-extern crate sgdata;
 
 use std::mem;
 
 use bincode::{deserialize, serialize};
 use libc::{c_int, c_void, iovec};
+use rexsgdata::{SgData, SgList};
 use serde_test::{assert_ser_tokens, Token};
-use sgdata::{SgData, SgList};
 
 fn vec_into_iovec(mut vec: Vec<u8>) -> iovec {
     let len = vec.len();

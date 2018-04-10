@@ -1,17 +1,17 @@
 [package]
-name = "sgdata"
+name = "rexsgdata"
 version = "0.1.0" # remember to update html_root_url
 authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
 categories = ["data-structures"]
 description = "Scatter-Gather Data Descriptors"
-documentation = "https://docs.rs/sgdata"
+documentation = "https://docs.rs/rexsgdata"
 keywords = ["scatter", "gather", "iovec"]
 license = "Apache-2.0 OR MIT"
 readme = "README.md"
-repository = "https://gitlab.com/imp/sgdate-rs.git"
+repository = "https://gitlab.com/imp/rexsgdata-rs.git"
 
 [badges]
-gitlab = { repository = "imp/sgdata-rs" }
+gitlab = { repository = "imp/rexsgdata-rs" }
 maintenance = { status = "experimental" }
 
 [dependencies]
