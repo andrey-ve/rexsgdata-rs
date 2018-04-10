@@ -94,6 +94,8 @@ impl SgList {
     }
 }
 
+unsafe impl Send for SgList {}
+
 impl Serialize for SgList {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
