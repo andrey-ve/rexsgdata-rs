@@ -20,11 +20,16 @@ use serde::de::{self, Error};
 use serde::ser::{SerializeSeq, SerializeTupleVariant};
 use serde::{Serialize, Serializer};
 
+/// High Level wrapper for multiple data representation methods.
 #[derive(Debug, Deserialize, PartialEq)]
 pub enum SgData {
+    /// Classic Scatter Gather list as it comes from C (array of `iovec` elements)
     SgList(SgList),
+    /// Vec<u8> scatter-gather list
     SgVec(Vec<Vec<u8>>),
+    /// Plain Vec<u8> buffer
     Direct(Vec<u8>),
+    /// Special case for `iovec` array that is itself a Rust' `Vec`
     Element(Vec<Element>),
 }
 
@@ -119,13 +124,17 @@ impl IntoIterator for SgData {
     }
 }
 
+/// Wrapper for a C-style scatter gather list
 #[derive(Debug, PartialEq)]
 pub struct SgList {
+    /// Pointer to the `iovec` array
     iovec: *const iovec,
+    /// Number of `iovec` elements in the array
     count: c_int,
 }
 
 impl SgList {
+    /// Constructs new `SgList` object from raw arguments
     pub fn new(iovec: *const iovec, count: c_int) -> Self {
         Self { iovec, count }
     }
@@ -163,12 +172,16 @@ impl<'de> de::Deserialize<'de> for SgList {
     }
 }
 
+/// Intermediate element that can represent either regular `iovec` or a sequence of zeroes
 pub enum Element {
+    /// A block of zeroes of a specified size
     Zero(usize),
+    /// Regular `iovec`
     Iovec(iovec),
 }
 
 impl Element {
+    /// Constructs `Element::Zero` variant of a specified size
     pub fn zero(size: usize) -> Self {
         Element::Zero(size)
     }
