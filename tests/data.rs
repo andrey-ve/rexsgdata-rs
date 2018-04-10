@@ -11,6 +11,7 @@ use libc::{c_int, c_void, iovec};
 use rexsgdata::{SgData, SgList};
 use serde_test::{assert_ser_tokens, Token};
 
+// NB - never use this code outside of the tests - it leaks memory
 fn vec_into_iovec(mut vec: Vec<u8>) -> iovec {
     let len = vec.len();
     let base = vec.as_mut_ptr();
@@ -21,6 +22,7 @@ fn vec_into_iovec(mut vec: Vec<u8>) -> iovec {
     }
 }
 
+// NB - never use this code outside of the tests - it leaks memory
 fn create_sglist(sgvec: Vec<Vec<u8>>) -> SgList {
     let vec = sgvec.into_iter().map(vec_into_iovec).collect::<Vec<_>>();
     let len = vec.len();
