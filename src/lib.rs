@@ -8,8 +8,8 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use std::iter::FromIterator;
 use std::fmt;
+use std::iter::FromIterator;
 use std::slice;
 use std::vec;
 
@@ -23,6 +23,7 @@ pub enum SgData {
     SgList(SgList),
     SgVec(Vec<Vec<u8>>),
     Direct(Vec<u8>),
+    Element(Vec<Element>),
 }
 
 impl From<SgList> for SgData {
@@ -63,6 +64,16 @@ impl FromIterator<Vec<u8>> for SgData {
     }
 }
 
+impl FromIterator<Element> for SgData {
+    fn from_iter<T>(iter: T) -> Self
+    where
+        T: IntoIterator<Item = Element>,
+    {
+        let vec = iter.into_iter().collect::<Vec<_>>();
+        SgData::Element(vec)
+    }
+}
+
 impl Serialize for SgData {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -85,6 +96,7 @@ impl Serialize for SgData {
                 data.serialize_field(buf)?;
                 data.end()
             }
+            SgData::Element(ref _vec) => unimplemented!(),
         }
     }
 }
@@ -98,6 +110,7 @@ impl IntoIterator for SgData {
             SgData::SgList(_) => unimplemented!(),
             SgData::SgVec(sgvec) => sgvec,
             SgData::Direct(buf) => vec![buf],
+            SgData::Element(_) => unimplemented!(),
         };
 
         vec.into_iter()
@@ -177,6 +190,35 @@ impl fmt::Debug for Element {
             Zero(size) => write!(f, "Element::Zero({})", size),
             Iovec(ref iov) => write!(f, "Element::Iovec({:?}, {:?})", iov.iov_base, iov.iov_len),
         }
+    }
+}
+
+impl PartialEq for Element {
+    fn eq(&self, other: &Self) -> bool {
+        use Element::*;
+
+        if let Zero(ref size) = self {
+            if let Zero(ref other) = other {
+                return size == other;
+            }
+        }
+
+        if let Iovec(ref iovec) = self {
+            if let Iovec(ref other) = other {
+                return (iovec.iov_base == other.iov_base) && (iovec.iov_len == other.iov_len);
+            }
+        }
+
+        false
+    }
+}
+
+impl<'de> de::Deserialize<'de> for Element {
+    fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
+    where
+        D: de::Deserializer<'de>,
+    {
+        Err(D::Error::custom("Cannot deserialize Element"))
     }
 }
 
