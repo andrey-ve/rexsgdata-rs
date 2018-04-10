@@ -103,7 +103,12 @@ impl Serialize for SgData {
                 data.serialize_field(buf)?;
                 data.end()
             }
-            SgData::Element(ref _vec) => unimplemented!(),
+            SgData::Element(ref vec) => {
+                // While serializing `Element` variant mimics `SgVec`
+                let mut data = serializer.serialize_tuple_variant("SgData", 1, "SgVec", 1)?;
+                data.serialize_field(vec)?;
+                data.end()
+            }
         }
     }
 }
