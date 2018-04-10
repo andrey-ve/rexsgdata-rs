@@ -1,7 +1,7 @@
 #![cfg_attr(all(feature = "cargo-clippy", feature = "pedantic"), warn(clippy_pedantic))]
 #![cfg_attr(feature = "cargo-clippy", warn(use_self))]
 #![deny(warnings, missing_debug_implementations)]
-#![doc(html_root_url = "https://docs.rs/sgdata/0.1.2")]
+#![doc(html_root_url = "https://docs.rs/sgdata/0.1.3")]
 
 extern crate libc;
 extern crate serde;
