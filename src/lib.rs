@@ -10,6 +10,7 @@ extern crate serde_derive;
 
 use std::slice;
 use std::vec;
+use std::fmt;
 
 use libc::{c_int, iovec};
 use serde::de::{self, Error};
@@ -125,7 +126,6 @@ impl<'de> de::Deserialize<'de> for SgList {
     }
 }
 
-#[derive(Debug)]
 pub enum Element {
     Zero(usize),
     Iovec(iovec),
@@ -140,6 +140,16 @@ impl Element {
 impl From<iovec> for Element {
     fn from(iovec: iovec) -> Self {
         Element::Iovec(iovec)
+    }
+}
+
+impl fmt::Debug for Element {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use Element::*;
+        match *self {
+            Zero(size) => write!(f, "Element::Zero({})", size),
+            Iovec(ref iov) => write!(f, "Element::Iovec({:?}, {:?})", iov.iov_base, iov.iov_len),
+        }
     }
 }
 
