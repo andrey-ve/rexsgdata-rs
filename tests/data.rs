@@ -8,7 +8,7 @@ use std::mem;
 
 use bincode::{deserialize, serialize};
 use libc::{c_int, c_void, iovec};
-use rexsgdata::{SgData, SgList};
+use rexsgdata::{SgData, SgList, Element};
 use serde_test::{assert_ser_tokens, Token};
 
 // NB - never use this code outside of the tests - it leaks memory
@@ -32,13 +32,26 @@ fn create_sglist(sgvec: Vec<Vec<u8>>) -> SgList {
 }
 
 #[test]
-fn sglist_serialize_deserialize() {
+fn sglist_serde() {
     let sgvec = vec![vec![0x45_u8; 4096]; 5];
     let data = SgData::from(create_sglist(sgvec));
     let buf = serialize(&data).unwrap();
     let data: SgData = deserialize(&buf).unwrap();
 
     assert_eq!(data, SgData::from(vec![vec![0x45_u8; 4096]; 5]));
+}
+
+#[test]
+fn element_serde() {
+    let data: SgData = vec![vec![0x46; 4096]; 7].into_iter()
+        .map(vec_into_iovec)
+        .map(Element::from)
+        .collect();
+
+    let buf = serialize(&data).unwrap();
+    let data: SgData = deserialize(&buf).unwrap();
+
+    assert_eq!(data, SgData::from(vec![vec![0x46; 4096]; 7]));
 }
 
 #[test]
@@ -119,4 +132,69 @@ fn sglist() {
             Token::TupleVariantEnd,
         ],
     );
+}
+
+#[test]
+fn element_zero() {
+    let data: SgData = vec![Element::zero(4), Element::zero(5)].into_iter().collect();
+    assert_ser_tokens(
+        &data,
+        &[
+            Token::TupleVariant {
+                name: "SgData",
+                variant: "SgVec",
+                len: 1
+            },
+            Token::Seq { len: Some(2) },
+            Token::Seq { len: Some(4) },
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::SeqEnd,
+            Token::Seq { len: Some(5) },
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::SeqEnd,
+            Token::SeqEnd,
+            Token::TupleVariantEnd,
+        ],
+    );
+}
+
+#[test]
+fn element_iovec() {
+    let data: SgData = vec![vec![36, 123, 234], vec![87, 187, 211, 45]].into_iter()
+        .map(vec_into_iovec)
+        .map(Element::from)
+        .collect();
+
+    assert_ser_tokens(
+        &data,
+        &[
+            Token::TupleVariant {
+                name: "SgData",
+                variant: "SgVec",
+                len: 1
+            },
+            Token::Seq { len: Some(2) },
+            Token::Seq { len: Some(3) },
+            Token::U8(36),
+            Token::U8(123),
+            Token::U8(234),
+            Token::SeqEnd,
+            Token::Seq { len: Some(4) },
+            Token::U8(87),
+            Token::U8(187),
+            Token::U8(211),
+            Token::U8(45),
+            Token::SeqEnd,
+            Token::SeqEnd,
+            Token::TupleVariantEnd,
+        ],
+    );
+
 }
