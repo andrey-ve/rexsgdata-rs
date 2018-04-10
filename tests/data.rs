@@ -196,5 +196,39 @@ fn element_iovec() {
             Token::TupleVariantEnd,
         ],
     );
+}
 
+#[test]
+fn element_mixed() {
+    let data: SgData = vec![vec![36, 123, 234]].into_iter()
+        .map(vec_into_iovec)
+        .map(Element::from)
+        .chain(Some(Element::zero(5)))
+        .collect();
+
+    assert_ser_tokens(
+        &data,
+        &[
+            Token::TupleVariant {
+                name: "SgData",
+                variant: "SgVec",
+                len: 1
+            },
+            Token::Seq { len: Some(2) },
+            Token::Seq { len: Some(3) },
+            Token::U8(36),
+            Token::U8(123),
+            Token::U8(234),
+            Token::SeqEnd,
+            Token::Seq { len: Some(5) },
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::U8(0),
+            Token::SeqEnd,
+            Token::SeqEnd,
+            Token::TupleVariantEnd,
+        ],
+    );
 }
