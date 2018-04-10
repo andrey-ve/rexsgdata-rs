@@ -12,7 +12,7 @@ use std::slice;
 use std::vec;
 use std::fmt;
 
-use libc::{c_int, iovec};
+use libc::{c_int, c_void, iovec, size_t};
 use serde::de::{self, Error};
 use serde::ser::{SerializeSeq, SerializeTupleVariant};
 use serde::{Serialize, Serializer};
@@ -140,6 +140,12 @@ impl Element {
 impl From<iovec> for Element {
     fn from(iovec: iovec) -> Self {
         Element::Iovec(iovec)
+    }
+}
+
+impl From<(*mut c_void, size_t)> for Element {
+    fn from((iov_base, iov_len): (*mut c_void, size_t)) -> Self {
+        Element::Iovec(iovec { iov_base, iov_len })
     }
 }
 
