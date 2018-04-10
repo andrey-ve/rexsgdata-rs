@@ -200,14 +200,14 @@ impl PartialEq for Element {
     fn eq(&self, other: &Self) -> bool {
         use Element::*;
 
-        if let Zero(ref size) = self {
-            if let Zero(ref other) = other {
+        if let Zero(ref size) = *self {
+            if let Zero(ref other) = *other {
                 return size == other;
             }
         }
 
-        if let Iovec(ref iovec) = self {
-            if let Iovec(ref other) = other {
+        if let Iovec(ref iovec) = *self {
+            if let Iovec(ref other) = *other {
                 return (iovec.iov_base == other.iov_base) && (iovec.iov_len == other.iov_len);
             }
         }
