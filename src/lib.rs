@@ -125,6 +125,24 @@ impl<'de> de::Deserialize<'de> for SgList {
     }
 }
 
+#[derive(Debug)]
+pub enum Element {
+    Zero(usize),
+    Iovec(iovec),
+}
+
+impl Element {
+    pub fn zero(size: usize) -> Self {
+        Element::Zero(size)
+    }
+}
+
+impl From<iovec> for Element {
+    fn from(iovec: iovec) -> Self {
+        Element::Iovec(iovec)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
