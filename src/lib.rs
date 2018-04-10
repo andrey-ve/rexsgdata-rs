@@ -203,7 +203,7 @@ impl fmt::Debug for Element {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use Element::*;
         match *self {
-            Zero(size) => write!(f, "Element::Zero({})", size),
+            Zero(ref size) => write!(f, "Element::Zero({:?})", size),
             Iovec(ref iov) => write!(f, "Element::Iovec({:?}, {:?})", iov.iov_base, iov.iov_len),
         }
     }
