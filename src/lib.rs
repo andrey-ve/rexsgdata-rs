@@ -213,6 +213,8 @@ impl PartialEq for Element {
     }
 }
 
+unsafe impl Send for Element {}
+
 impl<'de> de::Deserialize<'de> for Element {
     fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
     where
@@ -220,6 +222,14 @@ impl<'de> de::Deserialize<'de> for Element {
     {
         Err(D::Error::custom("Cannot deserialize Element"))
     }
+}
+
+fn _assert_impls() {
+    fn assert_send<T: Send>() {}
+    fn assert_sync<T: Sync>() {}
+    fn assert_clone<T: Clone>() {}
+
+    assert_send::<SgData>();
 }
 
 #[cfg(test)]
