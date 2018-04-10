@@ -53,6 +53,14 @@ impl FromIterator<u8> for SgData {
     }
 }
 
+impl FromIterator<Vec<u8>> for SgData {
+    fn from_iter<T>(iter: T) -> Self
+    where
+        T: IntoIterator<Item = Vec<u8>>,
+    {
+        let vec = iter.into_iter().collect::<Vec<_>>();
+        SgData::SgVec(vec)
+    }
 }
 
 impl Serialize for SgData {
