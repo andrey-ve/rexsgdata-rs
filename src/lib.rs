@@ -1,3 +1,5 @@
+//! Scatter Gather Data Wrapper.
+
 #![cfg_attr(all(feature = "cargo-clippy", feature = "pedantic"), warn(clippy_pedantic))]
 #![cfg_attr(feature = "cargo-clippy", warn(use_self))]
 #![deny(warnings, missing_debug_implementations)]
