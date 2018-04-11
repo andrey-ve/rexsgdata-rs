@@ -218,19 +218,13 @@ impl PartialEq for Element {
     fn eq(&self, other: &Self) -> bool {
         use Element::*;
 
-        if let Zle(ref size) = *self {
-            if let Zle(ref other) = *other {
-                return size == other;
+        match (self, other) {
+            (&Zle(ref size1), &Zle(ref size2)) => size1 == size2,
+            (&Iovec(ref iov1), &Iovec(ref iov2)) => {
+                iov1.iov_base == iov2.iov_base && iov1.iov_len == iov2.iov_len
             }
+            _ => false,
         }
-
-        if let Iovec(ref iovec) = *self {
-            if let Iovec(ref other) = *other {
-                return (iovec.iov_base == other.iov_base) && (iovec.iov_len == other.iov_len);
-            }
-        }
-
-        false
     }
 }
 
