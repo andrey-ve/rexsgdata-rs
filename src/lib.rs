@@ -179,16 +179,16 @@ impl<'de> de::Deserialize<'de> for SgList {
 
 /// Intermediate element that can represent either regular `iovec` or a sequence of zeroes
 pub enum Element {
-    /// A block of zeroes of a specified size
-    Zero(usize),
+    /// A block of zeroes of a specified size (aka Zero Length Encoding)
+    Zle(usize),
     /// Regular `iovec`
     Iovec(iovec),
 }
 
 impl Element {
-    /// Constructs `Element::Zero` variant of a specified size
+    /// Constructs `Element::Zle` variant of a specified size
     pub fn zero(size: usize) -> Self {
-        Element::Zero(size)
+        Element::Zle(size)
     }
 }
 
@@ -208,7 +208,7 @@ impl fmt::Debug for Element {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use Element::*;
         match *self {
-            Zero(ref size) => write!(f, "Element::Zero({:?})", size),
+            Zle(ref size) => write!(f, "Element::Zle({:?})", size),
             Iovec(ref iov) => write!(f, "Element::Iovec({:?}, {:?})", iov.iov_base, iov.iov_len),
         }
     }
@@ -218,8 +218,8 @@ impl PartialEq for Element {
     fn eq(&self, other: &Self) -> bool {
         use Element::*;
 
-        if let Zero(ref size) = *self {
-            if let Zero(ref other) = *other {
+        if let Zle(ref size) = *self {
+            if let Zle(ref other) = *other {
                 return size == other;
             }
         }
@@ -243,7 +243,7 @@ impl Serialize for Element {
         S: Serializer,
     {
         match *self {
-            Element::Zero(ref size) => serializer.collect_seq(iter::repeat(0_u8).take(*size)),
+            Element::Zle(ref size) => serializer.collect_seq(iter::repeat(0_u8).take(*size)),
             Element::Iovec(ref iov) => {
                 let buf = unsafe {
                     let base = (*iov).iov_base as *const u8;
